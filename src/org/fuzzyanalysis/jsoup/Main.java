@@ -18,7 +18,7 @@ public class Main {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
-		String searchTerm = "Dildo";
+		String searchTerm = "prius";
 		searchTerm = searchTerm.replace(" ", "%20");
 		getEbayPriceStatistics(searchTerm);
 		//getGumtreePriceStatistics(searchTerm);

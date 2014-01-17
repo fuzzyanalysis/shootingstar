@@ -18,8 +18,10 @@ public class Main {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
-		String searchTerm = "prius";
+		String searchTerm = "9781933988405";
+		
 		searchTerm = searchTerm.replace(" ", "%20");
+		
 		getEbayPriceStatistics(searchTerm);
 		//getGumtreePriceStatistics(searchTerm);
 		getAmazonPriceStatistics(searchTerm);
@@ -28,49 +30,50 @@ public class Main {
 		//getNextTagPriceStatistics();
 		getPriceGrabberPriceStatistics(searchTerm);
 		
+		getDealsDirectPriceStatistics(searchTerm);
+		getGumtreePriceStatistics(searchTerm);
 		
 		
 	}
 	
+	private static void getDealsDirectPriceStatistics(String searchTerm) {
+		
+		Shot dealsDirectShot = new Shot(
+				"DEALS DIRECT",
+				null,
+				"http://www.shoppingsquare.com.au/search.php?view=list&q="+searchTerm);
+		
+		dealsDirectShot.setElements(dealsDirectShot.getDocument().select("span itemprop.price"));					
+		dealsDirectShot.getStatistics();
+		
+	}
+
 	public static void getShoppingSquarePriceStatistics(String searchTerm){
 		//https://www.google.com/search?hl=en&tbm=shop&q=9780471998037
 		
-		Document squareDoc = null;
-		try {
-			squareDoc = Jsoup.connect(
-				"http://www.shoppingsquare.com.au/search.php?view=list&q=" + 
-				searchTerm).get();
-			
-			Elements squarePriceElements = squareDoc.select("span.price");			
-			
-			System.out.println("SHOPPING SQUARE");
-			getStatistics(squarePriceElements);
-						
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		Shot squareShot = new Shot(
+				"SHOPPING SQUARE",
+				null,
+				"http://www.shoppingsquare.com.au/search.php?view=list&q="+searchTerm);
+		
+		squareShot.setElements(squareShot.getDocument().select("span.price"));					
+		squareShot.getStatistics();
 	}
 
 	//http://www.amazon.com/s/ref=nb_sb_noss/182-6218273-9600557?url=search-alias%3Daps&field-keywords=9781933988023
 	
 	public static void getAmazonPriceStatistics(String searchTerm){
-		Document amazonDoc = null;
-		try {
-			amazonDoc = Jsoup.connect(
+
+		Shot amazonShot = new Shot(
+				"AMAZON",
+				null,
 				"http://www.amazon.com/gp/offer-listing/1933988029/ref=sr_1_1_olp?ie=UTF8&qid=1383429268&sr=8-1&keywords=" + 			
 				searchTerm + 
-				"&condition=used").get();
-			
-			Elements amazonPriceElements = amazonDoc.select("span.a-size-large.a-color-price.olpOfferPrice.a-text-bold");
-			
-			System.out.println("AMAZON");
-			getStatistics(amazonPriceElements);
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+				"&condition=used");
+		
+		amazonShot.setElements(amazonShot.getDocument().select("span.a-size-large.a-color-price.olpOfferPrice.a-text-bold"));
+		amazonShot.getStatistics();
 		
 	}
 	
@@ -81,131 +84,42 @@ public class Main {
 	public static void getPriceGrabberPriceStatistics(String searchTerm){
 		//http://www.pricegrabber.com/dildo-products/?form_keyword=Dildo
 		
-		Document pgDoc = null;
-		try {
-			pgDoc = Jsoup.connect(
-				"http://www.pricegrabber.com/dildo-products/?form_keyword=" +
-				searchTerm + 
-				"&layout=list").get();
+			Shot priceGrabberShot = new Shot(
+				"PRICE GRABBER",
+				null,
+				"http://www.pricegrabber.com/dildo-products/?form_keyword=" +searchTerm +"&layout=list");				
+				
+			priceGrabberShot.setElements(priceGrabberShot.getDocument().select("p a"));			
 			
-			Elements pgPriceElements = pgDoc.select("p a");			
-			
-			System.out.println("PRICE GRABBER");
-			getStatistics(pgPriceElements);
-						
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	
 				
-//	public static void getGumtreePriceStatistics(String searchTerm) {
-//		
-//		Document gumtreeDoc = null;
-//		try {
-//			searchTerm = searchTerm.replace("%20",  "+");
-//			gumtreeDoc = Jsoup.connect(
-//				"http://www.gumtree.com.au/s-" +
-//				searchTerm + 
-//				"/k0?sort=price_asc").get();
-//			
-//			Elements gumtreePriceElements = gumtreeDoc.select("#left_container > div.eq(1) > table > tbody > tr:eq(1) > td.eq(4)");		
-//			
-//			//*[@id="left_container"]/div[1]/table/tbody/tr[1]/td[4]
-//			
-//			System.out.println("GUMTREE");
-//			getStatistics(gumtreePriceElements);
-//			
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		
-//
-//	}
+	public static void getGumtreePriceStatistics(String searchTerm) {
+		
+		Shot gumtreeShot = new Shot(
+				"GUMTREE",
+				null,
+				"http://www.gumtree.com.au/s-" + searchTerm + "/k0?sort=price_asc");
+			
+			gumtreeShot.setElements(gumtreeShot.getDocument().select("#left_container > div.eq(1) > table > tbody > tr:eq(1) > td.eq(4)"));					
+			gumtreeShot.getStatistics();			
+
+	}
 
 	
 	
 	public static void getEbayPriceStatistics(String searchTerm) {
-		
-		Document ebayDoc = null;
-		try {
-			ebayDoc = Jsoup.connect(
-				"http://www.ebay.com.au/sch/i.html?_sacat=0&_from=R40&_nkw=" + 
-				searchTerm + 
-				"&rt=nc&_dmd=1").get();
+
+		Shot ebayShot = new Shot(
+			"EBAY",
+			null,
+			"http://www.ebay.com.au/sch/i.html?_sacat=0&_from=R40&_nkw=" + 
+			searchTerm + "&rt=nc&_dmd=1");
 			
-			Elements ebayPriceElements = ebayDoc.getElementsByClass("g-b");			
-			
-			System.out.println("EBAY");
-			getStatistics(ebayPriceElements);
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		ebayShot.setElements(ebayShot.getDocument().getElementsByClass("g-b"));			
+		ebayShot.getStatistics();
 
 	}
 
-	public static void getStatistics(Elements elements){
 
-		float totalPrices = 0;
-		float lowestPrice = -1;
-		float highestPrice = -1;
-		int numberOfItems = elements.size();
-		List<Float> priceList = new ArrayList<Float>();
-		
-		for(Element price: elements){
-			String priceText = 
-					price.text().
-					replace("$",  "").
-					replace(",", "").
-					replace("AU", "").					
-					replace("DEAL: ", "").
-					replace("FREE", "0").
-					replace(" ", "");
-			if(!"".equals(priceText)){
-				Float currPrice = (float) 0;
-				try{
-					currPrice = Float.parseFloat(priceText);
-				} catch (Exception ex){
-					continue;
-				}
-				priceList.add(currPrice);
-				totalPrices += currPrice;	
-				if(lowestPrice==-1 || currPrice<lowestPrice){
-					lowestPrice = currPrice;
-				}
-				if(highestPrice==-1 || currPrice>highestPrice){
-					highestPrice = currPrice;
-				}
-			}				
-		}
-
-		int mean = (int) (totalPrices/numberOfItems);
-		
-		// calculate deviations
-		List<Float> deviations = new ArrayList<Float>();
-		for(float price: priceList){
-			float deviation = price - mean;
-			deviations.add(deviation);				
-		}
-		
-		//calculate standard deviation (sample and population)
-		float sumOfDeviations = (float) 0;
-		for(Float deviation: deviations){
-			sumOfDeviations += deviation;
-		}
-		float standardDeviation = (float) Math.sqrt(sumOfDeviations/(numberOfItems - 1));
-		float populationStandardDeviation = (float) Math.sqrt(sumOfDeviations/numberOfItems);
-		
-		System.out.println("================================");
-		System.out.println("Highest price: " + highestPrice);
-		System.out.println("Lowest price: " + lowestPrice);
-		System.out.println("Average price: " + mean);
-		System.out.println("Standard Deviation: " + standardDeviation);
-		System.out.println("Population Standard Deviation: " + populationStandardDeviation);
-		System.out.println("================================");
-	}
 }
